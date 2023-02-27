@@ -1,4 +1,5 @@
 import bisect
+import heapq
 import sys
 sys.stdin = open('./greedy/input_bj_1202.txt')
 input = sys.stdin.readline
@@ -6,7 +7,7 @@ input = sys.stdin.readline
 # input
 N, K = map(int, input().rstrip().split())
 jewels = sorted([tuple(map(int, input().rstrip().split())) for _ in range(N)], key=lambda x: x[1], reverse=True)
-bags = sorted([int(input().rstrip()) for _ in range(K)])
+bags = heapq.heapify([int(input().rstrip()) for _ in range(K)])
 
 result = 0
 i = 0
