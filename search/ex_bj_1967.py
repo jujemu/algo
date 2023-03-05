@@ -1,28 +1,39 @@
-N, K = map(int, input().split())
-check = [True] * 100001
+import sys
+sys.stdin = open('./search/input_bj_1967.txt')
+input = sys.stdin.readline
 
-def bfs():
-    cnt = 0
-    q = [N]
-    check[N] = False
+# input
+N = int(input())
+g = [[] for _ in range(N+1)]
+for _ in range(N-1):
+    p, c, w = map(int, input().split())
+    g[p].append((c, w))
+    g[c].append((p, w))
+
+# find leave
+leave = set()
+for idx, vertex in enumerate(g):
+    if len(vertex) == 1:
+        leave.add(idx)
+
+# dfs
+def dfs(vertex, acc, start):
+    if vertex in leave and vertex != start:
+        global result
+        result = max(result, acc)
+        return
     
-    while True:
-        tmp = []
-        for nN in q:
-            l, r, t = nN-1, nN+1, nN*2
-            if K in [l,r,t]:
-                return cnt+1
-            
-            if l >= 0 and check[l]:
-                check[l] = False
-                tmp.append(l)
-            if r <= 100000 and check[r]:
-                check[r] = False
-                tmp.append(r)
-            if t <= 100000 and check[t]:
-                check[t] = False
-                tmp.append(t)
-        q = tmp
-        cnt += 1
-        
-print(bfs() if N != K else 0)
+    for adj, w in g[vertex]:
+        if not visited[adj]:
+            visited[adj] = True
+            dfs(adj, acc+w, start)
+    
+# find the max length of tree in leave loop
+result = 0
+for leaf in leave:
+    visited = [False] * (N+1)
+    visited[leaf] = True
+    dfs(leaf, 0, leaf)
+
+# output
+print(result)
